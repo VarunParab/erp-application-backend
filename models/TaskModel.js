@@ -2,19 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
-    category: {
+    taskName: {
         type: String,
         required: true,
     },
-    content:{
+    status:{
         type: String,
         required: true,
     },
-    label:{
+    project:{
         type: String,
         required: true,
     },
     dueDate:{
+        type: String,
+        required: true,
+    },
+    assignee:{
         type: String,
         required: true,
     }

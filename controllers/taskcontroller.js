@@ -8,9 +8,9 @@ const getAllTasks = async (req, res) => {
 
 //create a new Task
 const createTask = async (req,res) => {
-    const {category,content,label,dueDate} = req.body
+    const {taskName,status,project,dueDate,assignee} = req.body
     try{
-    const task=await Task.create({category,content,label,dueDate});
+    const task=await Task.create({taskName,status,project,dueDate,assignee});
     res.status(200).json(task);
     }catch(err){
         res.status(400).json({message: err.message});
