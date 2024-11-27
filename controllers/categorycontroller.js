@@ -245,6 +245,99 @@ const getAllProjects = async (req, res) => {
     }
   };  
   
+const editProject = async (req, res) => {
+    try {
+      const { id } = req.params; // Extract project ID from the URL
+      const {
+        categoryName, // Optional
+        projectName,
+        details,
+        status,
+        progress,
+        startDate,
+        endDate,
+        client,
+      } = req.body;
+  
+      // Validate input
+      if (!id) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+  
+      // Case 1: Update project within a category
+      if (categoryName) {
+        // Find the category by name (case-insensitive)
+        const category = await Category.findOne({
+          categoryName: new RegExp(`^${categoryName}$`, "i"),
+        });
+  
+        if (!category) {
+          return res.status(404).json({ message: "Category not found" });
+        }
+  
+        // Find the project in the category using the project ID
+        const project = category.projects.id(id);
+  
+        if (!project) {
+          return res
+            .status(404)
+            .json({ message: "Project not found in the specified category" });
+        }
+  
+        // Update the project details (only update fields provided)
+        project.projectName = projectName || project.projectName;
+        project.details = details || project.details;
+        project.status = status || project.status;
+        project.progress = progress || project.progress;
+        project.startDate = startDate || project.startDate;
+        project.endDate = endDate || project.endDate;
+        project.client = client || project.client;
+  
+        // Save the updated category
+        await category.save();
+  
+        return res.status(200).json({
+          message: "Project updated successfully within category",
+          success: true,
+          category,
+        });
+      } else {
+        // Case 2: Update standalone project
+        const project = await Project.findById(id);
+  
+        if (!project) {
+          return res.status(404).json({ message: "Project not found" });
+        }
+  
+        // Update the project details (only update fields provided)
+        project.projectName = projectName || project.projectName;
+        project.details = details || project.details;
+        project.status = status || project.status;
+        project.progress = progress || project.progress;
+        project.startDate = startDate || project.startDate;
+        project.endDate = endDate || project.endDate;
+        project.client = client || project.client;
+  
+        // Save the updated project
+        const updatedProject = await project.save();
+  
+        return res.status(200).json({
+          message: "Project updated successfully",
+          success: true,
+          project: updatedProject,
+        });
+      }
+    } catch (error) {
+      console.error("Error editing project:", error);
+      return res
+        .status(500)
+        .json({ message: "An error occurred while editing the project" });
+    }
+};  
+  
+const editCategory = async(req,res) => {
+  
+}
   
 module.exports = {
   getCategoryWithProjects,
@@ -253,4 +346,5 @@ module.exports = {
   getAllCategories,
   getAllProjects,
   createProjectNoCategory,
+  editProject,
 };
