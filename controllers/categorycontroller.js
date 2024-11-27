@@ -62,6 +62,7 @@ const createCategory = async (req, res) => {
 
     return res.status(201).json({
       message: "Category created successfully",
+      success: true,
       category: savedCategory,
     });
   } catch (error) {
@@ -75,16 +76,19 @@ const createCategory = async (req, res) => {
 //controller to get all categories
 const getAllCategories = async (req, res) => {
   try {
-    // Fetch all categories, only retrieving the categoryName field
+    // Fetch all categories, including their categoryName
     const categories = await Category.find({}, "categoryName");
 
     if (!categories.length) {
       return res.status(404).json({ message: "No categories found" });
     }
 
+    // Return categories as an array of objects
     return res.status(200).json({
       message: "Categories fetched successfully",
-      categories: categories.map((category) => category.categoryName),
+      categories: categories.map((category) => ({
+        categoryName: category.categoryName,  // Return each category as an object
+      })),
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -100,6 +104,7 @@ const addProjectToCategory = async (req, res) => {
     const {
       categoryName,
       projectName,
+      details,
       status,
       progress,
       startDate,
@@ -140,6 +145,7 @@ const addProjectToCategory = async (req, res) => {
     // Create a new project object
     const newProject = {
       projectName,
+      details,
       status,
       progress,
       startDate,
@@ -155,6 +161,7 @@ const addProjectToCategory = async (req, res) => {
 
     return res.status(200).json({
       message: "Project added successfully",
+      success: true,
       category: updatedCategory,
     });
   } catch (error) {
@@ -168,12 +175,13 @@ const addProjectToCategory = async (req, res) => {
 //controller to create project with no category
 const createProjectNoCategory = async (req, res) => {
   try {
-    const { projectName, status, progress, startDate, endDate, client } =
+    const { projectName, details, status, progress, startDate, endDate, client } =
       req.body;
 
     // Validate the input fields
     if (
       !projectName ||
+      !details ||
       !status ||
       !progress ||
       !startDate ||
@@ -186,6 +194,7 @@ const createProjectNoCategory = async (req, res) => {
     // Create the project without a category
     const newProject = new Project({
       projectName,
+      details,
       status,
       progress,
       startDate,
@@ -199,6 +208,7 @@ const createProjectNoCategory = async (req, res) => {
 
     return res.status(201).json({
       message: "Project created successfully without category",
+      success: true,
       project: savedProject,
     });
   } catch (error) {

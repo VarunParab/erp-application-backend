@@ -7,10 +7,13 @@ const projectSchema = new Schema({
         type: String,
         required: true,
     },
+    details:{
+        type: String,
+        required: false,
+    },
     status: {
         type: String,
-        required: true,
-        enum: ['Pending', 'In Progress', 'Completed'], // Optional: Add enum for predefined values
+        required: true, // Optional: Add enum for predefined values
     },
     progress: {
         type: Number, // Use Number to allow percentages (e.g., 0-100)
