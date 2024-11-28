@@ -8,10 +8,12 @@ const {
     getAllProjects,
     createProjectNoCategory,
     editProject,
+    editCategory,
 } = require('../controllers/categorycontroller');
 
 router.get('/', getAllCategories);
 router.post('/',createCategory);
+router.put('/edit', editCategory);
 router.put('/projects/:id', editProject);
 router.get('/allProjects', getAllProjects);
 router.post('/allProjects', createProjectNoCategory);
