@@ -273,21 +273,21 @@ const createProjectNoCategory = async (req, res) => {
 const getAllProjects = async (req, res) => {
     try {
       // Fetch projects from all categories, including projects without categories
-      const categories = await Category.find({}, "projects");
+      // const categories = await Category.find({}, "projects");
   
-      const allProjects = categories.reduce((projects, category) => {
-        return projects.concat(category.projects);
-      }, []);
+      // const allProjects = categories.reduce((projects, category) => {
+      //   return projects.concat(category.projects);
+      // }, []);
   
       // Also find projects that are not in any category (category is null)
       const projectsWithoutCategory = await Project.find({ category: { $eq: null } });
   
       // Combine both lists of projects
-      const allProjectsIncludingNoCategory = allProjects.concat(projectsWithoutCategory);
+      //const allProjectsIncludingNoCategory = allProjects.concat(projectsWithoutCategory);
   
       return res.status(200).json({
         message: "All projects fetched successfully",
-        projects: allProjectsIncludingNoCategory,
+        projects: projectsWithoutCategory,
       });
     } catch (error) {
       console.error("Error fetching all projects:", error);
@@ -295,7 +295,7 @@ const getAllProjects = async (req, res) => {
     }
   };  
   
-const editProject = async (req, res) => {
+  const editProject = async (req, res) => {
     try {
       const { id } = req.params; // Extract project ID from the URL
       const {
@@ -349,7 +349,8 @@ const editProject = async (req, res) => {
         return res.status(200).json({
           message: "Project updated successfully within category",
           success: true,
-          category,
+          project: project, // Return the updated project
+          categoryName: category.categoryName, // Optionally return category name
         });
       } else {
         // Case 2: Update standalone project
@@ -374,7 +375,7 @@ const editProject = async (req, res) => {
         return res.status(200).json({
           message: "Project updated successfully",
           success: true,
-          project: updatedProject,
+          project: updatedProject, // Return the updated project
         });
       }
     } catch (error) {
@@ -383,7 +384,8 @@ const editProject = async (req, res) => {
         .status(500)
         .json({ message: "An error occurred while editing the project" });
     }
-};  
+  };
+  
 
   
 module.exports = {
