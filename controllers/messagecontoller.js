@@ -2,6 +2,8 @@ const Message = require('../models/MessageModel.js');
 const User = require('../models/UserModel.js');
 const cloudinary = require("../lib/cloudinary.js");
 const { getReceiverSocketId, io } = require("../lib/socket.js");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" }); // Temporary storage
 
 const getUsersForSidebar = async (req, res) => {
     try {
@@ -33,6 +35,7 @@ const getMessages = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
 };
+
 const sendMessage = async (req, res) => {
     try {
       const { text, image } = req.body;
